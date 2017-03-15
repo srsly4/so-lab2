@@ -16,6 +16,7 @@
 #endif
 
 char* date_buff;
+uint32_t nftw_max_fsize;
 
 void dump_errno(){
     if (errno != 0)
@@ -90,7 +91,10 @@ int nftwfunc(const char *filename, const struct stat *statptr,
     if ((fileflags & FTW_F) || S_ISREG(statptr->st_mode))
     {
         ctime_r(&(statptr->st_mtime), date_buff);
-        printf("%s %d bytes ", filename, (uint32_t)(statptr->st_size));
+        uint32_t size = (uint32_t)(statptr->st_size);
+        if (size > nftw_max_fsize)
+            return 0;
+        printf("%s %d bytes ", filename, size);
         print_file_permissions(statptr->st_mode);
         printf(" modified: %s", date_buff);
     }
@@ -125,7 +129,8 @@ int main(int argc, char *argv[]){
 #ifndef USE_NFTW
     dirent_descend(rpath, max_fsize);
 #else
-    nftw(rpath, nftwfunc, 10, FTW_PHYS);
+    nftw_max_fsize = max_fsize;
+    nftw(rpath, nftwfunc, 1024, FTW_PHYS);
 #endif
     free(date_buff);
     free(rpath);

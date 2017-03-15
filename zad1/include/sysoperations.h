@@ -9,5 +9,5 @@
 
 void sys_generate(char* fname, uint32_t record_count, uint32_t record_size);
 void sys_sort(char* fname, uint32_t record_count, uint32_t record_size);
-
+void sys_shuffle(char* fname, uint32_t record_count, uint32_t record_size);
 #endif //ZAD1_SYSOPERATIONS_H

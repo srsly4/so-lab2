@@ -6,10 +6,12 @@
 
 void (*tpl_generate)(char *fname, uint32_t record_count, uint32_t record_size);
 void (*tpl_sort)(char *fname, uint32_t record_count, uint32_t record_size);
+void (*tpl_shuffle)(char *fname, uint32_t record_count, uint32_t record_size);
 
 void select_mode_sys(){
     tpl_generate = &sys_generate;
     tpl_sort = &sys_sort;
+    tpl_shuffle = &sys_shuffle;
 }
 
 void select_mode_lib(){
@@ -59,6 +61,9 @@ int main(int argc, char *argv[]) {
     }
     else if (strcmp(operation, "sort") == 0){
         tpl_sort(argv[3], rcount, rsize);
+    }
+    else if (strcmp(operation, "shuffle") == 0){
+        tpl_shuffle(argv[3], rcount, rsize);
     }
 
     return 0;

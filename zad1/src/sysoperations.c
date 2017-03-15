@@ -78,3 +78,39 @@ void sys_sort(char *fname, uint32_t record_count, uint32_t record_size) {
         sys_error_dump();
     }
 }
+
+void sys_shuffle(char *fname, uint32_t record_count, uint32_t record_size) {
+    int file;
+    if ((file = open(fname, O_RDWR)) == -1)
+        sys_error_dump();
+
+    int j;
+    unsigned char *first, *second;
+    first = malloc(record_size*sizeof(unsigned char));
+    second = malloc(record_size*sizeof(unsigned char));
+    for (int i = record_count-1; i > 0; i--){
+        j = rand() % (i+1);
+
+        if (lseek(file, i*record_size, SEEK_SET) == -1
+            || read(file, first, record_size) <= 0)
+            sys_error_dump();
+        if (lseek(file, j*record_size, SEEK_SET) == -1
+            || read(file, second, record_size) <= 0)
+            sys_error_dump();
+
+        //exchange
+        if (lseek(file, j*record_size, SEEK_SET) == -1
+            || write(file, first, record_size) <= 0)
+            sys_error_dump();
+        if (lseek(file, i*record_size, SEEK_SET) == -1
+            || write(file, second, record_size) <= 0)
+            sys_error_dump();
+    }
+
+    free(first);
+    free(second);
+    if (close(file)){
+        sys_error_dump();
+    }
+
+}

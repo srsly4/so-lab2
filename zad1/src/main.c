@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../include/sysoperations.h"
+#include "../include/liboperations.h"
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -15,7 +16,9 @@ void select_mode_sys(){
 }
 
 void select_mode_lib(){
-
+    tpl_generate = &lib_generate;
+    tpl_sort = &lib_sort;
+    tpl_shuffle = &lib_shuffle;
 }
 
 int main(int argc, char *argv[]) {

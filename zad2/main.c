@@ -1,12 +1,21 @@
+#ifdef USE_NFTW
+#define _XOPEN_SOURCE 500
+#define __USE_XOPEN_EXTENDED 1
+#include <ftw.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dirent.h>
-#include <fcntl.h>
 #include <inttypes.h>
 #include <errno.h>
-#include <sys/stat.h>
 #include <time.h>
+#ifndef USE_NFTW
+#include <dirent.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#endif
+
+char* date_buff;
 
 void dump_errno(){
     if (errno != 0)
@@ -29,24 +38,28 @@ void print_file_permissions(mode_t mode){
            (mode & S_IXOTH) ? "x" : "-"
     );
 }
-
+#ifndef USE_NFTW
 void dirent_descend(char* dirname, int max_fsize){
     printf("=> %s\n", dirname);
     DIR* dir = opendir(dirname);
     if (!dir) dump_errno();
     struct dirent* curr;
     struct stat* curr_file = malloc(sizeof(struct stat));
-    char* date_buff = malloc(26*sizeof(char));
+
+    char* fpath = malloc(PATH_MAX);
     while ((curr = readdir(dir))){
         if (strcmp(curr->d_name, ".") == 0
-                || strcmp(curr->d_name, "..") == 0)
+                || strcmp(curr->d_name, "..") == 0) {
             continue;
+        }
 
-        uint32_t pathsize = (uint32_t)strlen(curr->d_name) + (uint32_t)strlen(dirname) + 2;
-        char* fpath = malloc(pathsize);
         sprintf(fpath, "%s/%s", dirname, curr->d_name);
 
-        lstat(fpath, curr_file);
+        if (lstat(fpath, curr_file) == -1)
+        {
+            fprintf(stderr, "Could not lstat file %s\n", fpath);
+            break;
+        }
 
         if (S_ISREG(curr_file->st_mode)){
             uint32_t fsize = (uint32_t)curr_file->st_size;
@@ -59,15 +72,34 @@ void dirent_descend(char* dirname, int max_fsize){
         }
         if (S_ISDIR(curr_file->st_mode) && !S_ISLNK(curr_file->st_mode))
             dirent_descend(fpath, max_fsize);
-        free(fpath);
     }
-    free(date_buff);
+    free(fpath);
     free (curr_file);
 
     if (closedir(dir) == -1)
         dump_errno();
     printf("<=\n");
 }
+
+#endif
+
+#ifdef USE_NFTW
+int nftwfunc(const char *filename, const struct stat *statptr,
+             int fileflags, struct FTW *pfwt){
+
+    if ((fileflags & FTW_F) || S_ISREG(statptr->st_mode))
+    {
+        ctime_r(&(statptr->st_mtime), date_buff);
+        printf("%s %d bytes ", filename, (uint32_t)(statptr->st_size));
+        print_file_permissions(statptr->st_mode);
+        printf(" modified: %s", date_buff);
+    }
+    else if ((fileflags & FTW_NS) && S_ISREG(statptr->st_mode)){
+        printf("%s [ACCESS DENIED]\n", filename);
+    }
+    return 0;
+}
+#endif
 
 int main(int argc, char *argv[]){
 
@@ -89,7 +121,13 @@ int main(int argc, char *argv[]){
     if (!(rpath = realpath(argv[1], NULL)))
         dump_errno();
 
+    date_buff = malloc(26*sizeof(char));
+#ifndef USE_NFTW
     dirent_descend(rpath, max_fsize);
+#else
+    nftw(rpath, nftwfunc, 10, FTW_PHYS);
+#endif
+    free(date_buff);
     free(rpath);
     return 0;
 }

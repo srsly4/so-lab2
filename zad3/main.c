@@ -62,7 +62,7 @@ void unlock_byte(int fhndl, uint32_t pos){
     lck.l_type = F_UNLCK;
     lck.l_len = 1;
     lck.l_start = pos;
-    lck.l_whence = SEEK_END;
+    lck.l_whence = SEEK_SET;
     if (fcntl(fhndl, F_SETLK, &lck) == -1)
         printf("Error: %s\n", strerror(errno));
     else

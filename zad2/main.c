@@ -43,7 +43,10 @@ void print_file_permissions(mode_t mode){
 void dirent_descend(char* dirname, int max_fsize){
     printf("=> %s\n", dirname);
     DIR* dir = opendir(dirname);
-    if (!dir) dump_errno();
+    if (!dir){
+        printf("=> Cannot descend into: %s - %s \n", dirname, strerror(errno));
+        return;
+    }
     struct dirent* curr;
     struct stat* curr_file = malloc(sizeof(struct stat));
 

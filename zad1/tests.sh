@@ -3,7 +3,7 @@
 HCOLOR='\033[0;36m'
 NC='\033[0m' # No Color
 
-TIME_EXEC="/bin/time -p"
+TIME_EXEC="/usr/bin/time -p"
 TEST_FILES_DIR="./test-files"
 EXEC_NAME="./zad1"
 REC_SIZES="4"

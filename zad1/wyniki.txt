@@ -1,0 +1,216 @@
+====[Testing with record count 1000 and size 4 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 1.09
+user 0.11
+sys 0.97
+
+==>C library
+real 0.92
+user 0.19
+sys 0.72
+
+=> Shuffle tests...
+==> System library
+real 0.68
+user 0.10
+sys 0.57
+
+==> C library
+real 0.20
+user 0.10
+sys 0.09
+
+====[END]====
+
+
+====[Testing with record count 1000 and size 512 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 1.16
+user 0.10
+sys 1.03
+
+==>C library
+real 1.07
+user 0.24
+sys 0.81
+
+=> Shuffle tests...
+==> System library
+real 0.70
+user 0.10
+sys 0.59
+
+==> C library
+real 0.29
+user 0.15
+sys 0.12
+
+====[END]====
+
+
+====[Testing with record count 1000 and size 4096 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 1.95
+user 0.11
+sys 1.84
+
+==>C library
+real 1.77
+user 0.27
+sys 1.46
+
+=> Shuffle tests...
+==> System library
+real 1.45
+user 0.09
+sys 1.32
+
+==> C library
+real 1.22
+user 0.19
+sys 1.02
+
+====[END]====
+
+
+====[Testing with record count 1000 and size 8192 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 3.39
+user 0.11
+sys 3.24
+
+==>C library
+real 2.96
+user 0.28
+sys 2.61
+
+=> Shuffle tests...
+==> System library
+real 2.56
+user 0.07
+sys 2.43
+
+==> C library
+real 1.94
+user 0.21
+sys 1.68
+
+====[END]====
+
+
+====[Testing with record count 2000 and size 4 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 4.48
+user 0.39
+sys 4.04
+
+==>C library
+real 3.71
+user 0.99
+sys 2.70
+
+=> Shuffle tests...
+==> System library
+real 2.75
+user 0.32
+sys 2.40
+
+==> C library
+real 0.82
+user 0.42
+sys 0.39
+
+====[END]====
+
+
+====[Testing with record count 2000 and size 512 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 4.60
+user 0.46
+sys 4.12
+
+==>C library
+real 4.07
+user 0.98
+sys 3.07
+
+=> Shuffle tests...
+==> System library
+real 2.83
+user 0.26
+sys 2.56
+
+==> C library
+real 1.15
+user 0.51
+sys 0.62
+
+====[END]====
+
+
+====[Testing with record count 2000 and size 4096 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 8.00
+user 0.40
+sys 7.54
+
+==>C library
+real 6.99
+user 1.01
+sys 5.97
+
+=> Shuffle tests...
+==> System library
+real 5.87
+user 0.36
+sys 5.50
+
+==> C library
+real 4.69
+user 0.77
+sys 3.89
+
+====[END]====
+
+
+====[Testing with record count 2000 and size 8192 bytes]====
+=> Generating test files...
+=> Sorting tests...
+==> System library
+real 13.32
+user 0.40
+sys 12.89
+
+==>C library
+real 11.31
+user 1.02
+sys 10.18
+
+=> Shuffle tests...
+==> System library
+real 9.79
+user 0.34
+sys 9.44
+
+==> C library
+real 7.31
+user 0.80
+sys 6.42
+
+====[END]====
+ 
+Wyniki dla funkcji bibliotecznych okazały się bardziej wydajne. Uwydatniało się to szczególnie dla małych rozmiarów rekordów i ich ilości. Ma to zapewne związek z wbudowanym w funkcje biblioteczne buforowaniem, dzięki czemu ilość operacji I/O jest ograniczona.
